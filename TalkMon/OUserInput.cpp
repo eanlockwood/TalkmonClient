@@ -3,57 +3,57 @@
 #include <Windows.h>
 #include <WinUser.h>
 
+
+
 void OUserInput::TakeInput()
 {
-	cout << "input username: ";
-
 	char keyPressed;
 	
 	do
 	{
-
-		if (_kbhit())
+		if (!paused)
 		{
-			keyPressed = _getch();
-
-			if (keyPressed == '\r')
+			if (_kbhit())
 			{
-				ejected = true;
+				keyPressed = _getch();
 
-				if (caller)
+				if (keyPressed == '\r')
 				{
-					(caller->*CallbackFunc)(currentString);
-				}
-			}
+					ejected = true;
 
-			if (keyPressed == '\b')
-			{
-				if (!currentString.empty())
+					if (caller)
+					{
+						(caller->*CallbackFunc)(currentString);
+					}
+				}
+
+				if (keyPressed == '\b')
 				{
-					cout << "\b";
-					cout << " ";
-					cout << "\b";
+					if (!currentString.empty())
+					{
+						cout << "\b";
+						cout << " ";
+						cout << "\b";
 
-					currentString.pop_back();
+						currentString.pop_back();
 
+					}
 				}
-			}
-			else if (currentString.length() + 1 <= maxLen)
-			{
-				std::cout << keyPressed;
-				currentString.push_back(keyPressed);
+				else if (currentString.length() + 1 <= maxLen)
+				{
+					std::cout << keyPressed;
+					currentString.push_back(keyPressed);
+				}
 			}
 		}
-
 	} while (!ejected.load());
-
-	cout << "thread ending...";
 }
 
-void OUserInput::InitializeInput(string startOfWord, int maxLength, App* Caller, void (App::*callback)(string))
+void OUserInput::InitializeInput(int maxLength, App* Caller, void (App::*callback)(string))
 {
 	ejected = false;
 	maxLen = maxLength;
+	currentString = "";
 
 	if (Caller != nullptr)
 	{
@@ -64,11 +64,29 @@ void OUserInput::InitializeInput(string startOfWord, int maxLength, App* Caller,
 		
 	}
 
-	th = std::thread(&OUserInput::TakeInput, this);
+	std::thread t6(&OUserInput::TakeInput, this);
+
+	t6.detach();
+
+	paused = false;
 
 }
 
-string OUserInput::FreezeInput()
+void OUserInput::FreezeInput()
 {
-	return currentString;
+	int stringLength = currentString.length() + 2;
+	paused = true;
+
+	for (int c = 0; c < stringLength; c++)
+	{
+		cout << "\b";
+		cout << "";
+		cout << "\b";
+	}
+}
+
+void OUserInput::UnFreezeInput()
+{
+	cout << ">>" + currentString;
+	paused = false;
 }

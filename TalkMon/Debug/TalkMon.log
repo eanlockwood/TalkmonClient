@@ -1,2 +1,5 @@
 ﻿  App.cpp
+  TalkMon.cpp
+c:\users\ean\documents\chatsystemclient\talkmon\talkmon\talkmon.cpp(27): warning C4101: 'msg': unreferenced local variable
+  Generating Code...
   TalkMon.vcxproj -> C:\Users\Ean\Documents\ChatSystemClient\TalkMon\Debug\TalkMon.exe

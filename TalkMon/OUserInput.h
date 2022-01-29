@@ -8,7 +8,6 @@
 
 #include "App.h"
 
-class App;
 
 class OUserInput {
 
@@ -28,6 +27,8 @@ protected:
 	string currentString;
 	int maxLen;
 	std::atomic <bool> ejected;
+	std::atomic <bool> paused;
+
 
 	App* caller;
 	void (App::*CallbackFunc)(string);
@@ -38,8 +39,9 @@ protected:
 
 public:
 
-	void InitializeInput(string startOfWord, int maxLength, App* Caller, void (App::*callback)(string));
+	void InitializeInput(int maxLength, App* Caller, void (App::*callback)(string));
 
-	string FreezeInput();
+	void FreezeInput();
+	void UnFreezeInput();
 
 };

@@ -1,8 +1,11 @@
 #pragma once
 
 #include <string>
-#include "OUserInput.h"
+#include <Windows.h>
 
+
+
+class OUserInput;
 using namespace std;
 
 class App
@@ -22,11 +25,18 @@ public:
 protected:
 
 	bool lame;
+	string username;
+	SOCKET socket;
+	OUserInput* input;
+
 
 public:
 
-	void testInit();
+	string testInit();
+	void ConnectToServer(SOCKET sock, OUserInput* inputptr);
 
 	void FuckYou(string kek);
+
+	void sendMsg(string kek);
 
 };

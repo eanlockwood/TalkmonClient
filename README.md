@@ -1,2 +1,0 @@
-# TalkmonClient
- Yes

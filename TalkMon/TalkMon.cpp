@@ -7,7 +7,7 @@
 #include <thread>
 #include <stdlib.h>
 
-
+#include "App.h"
 #include "OUserInput.h"
 
 #pragma comment(lib, "ws2_32.lib")
@@ -60,10 +60,9 @@ int main()
 {
 	SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleHandler, TRUE);
 	std::cout << "Welcome to TalkMon!\n";
-	std::cout << "Enter a screen name: ";
 
 	App* newApp = new App();
-	newApp->testInit();
+	USERNAME = newApp->testInit();
 	//string username = StringHelpers::AwaitWordInput(15);
 	//std::cout << "\nfuck you " + username << endl;
 	
@@ -111,22 +110,30 @@ int main()
 		return 0;
 	}
 
+
 	string usertext = "/u " + USERNAME;
 	int sendResult = send(sock, usertext.c_str(), usertext.size() + 1, 0);
 	
-	char buff[250];
+	char buff[4090];
 	//await string does not work because it pauses the program
+
+	OUserInput* userInput = new OUserInput();
+	newApp->ConnectToServer(sock, userInput); //completely throwaway method used to reference sock while im too lazy to 
+	cout << ">>";
+	userInput->InitializeInput(200, newApp, &App::sendMsg);
+
 
 	do
 	{
-		ZeroMemory(buff, 250);
-		int messageRevieved = recv(sock, buff, 250, 0);
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		ZeroMemory(buff, 4090);
+		int messageRevieved = recv(sock, buff, 4090, 0);
 
 		if (messageRevieved > 0)
 		{
-			//copy the cmd line for transportation to next line
+			userInput->FreezeInput();
 			cout << buff << endl;
-			//reset the input
+			userInput->UnFreezeInput();
 		}
 
 	} while (0 == 0);
