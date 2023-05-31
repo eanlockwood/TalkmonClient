@@ -10,22 +10,22 @@
 
 string App::testInit()
 {
-	lame = false;
+	awaitinginput = false;
 	OUserInput* newInput = new OUserInput();
 	cout << "Input username: ";
-	newInput->InitializeInput(25, this, &App::FuckYou);
+	newInput->InitializeInput(25, this, &App::Hello);
 	
 	//std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 	do
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-	} while (!lame); // await username input
+	} while (!awaitinginput); // await username input
 	
 	delete newInput; 
 
 	return username;
-	//once callback, this is where I create socket + connect to server using the username blah blah blah
+	//once callback, this is where I create socket + connect to server using the username
 }
 
 void App::ConnectToServer(SOCKET sock, OUserInput* inputptr)
@@ -34,16 +34,16 @@ void App::ConnectToServer(SOCKET sock, OUserInput* inputptr)
 	input = inputptr;
 }
 
-void App::FuckYou(string kek)
+void App::Hello(string user)
 {
-	cout << "Hello " + kek << endl;
-	username = kek;
-	lame = true;
+	cout << "Hello " + user << endl;
+	username = user;
+	awaitinginput = true;
 }
 
-void App::sendMsg(string kek)
+void App::sendMsg(string msg)
 {
-	int stringLength = kek.length() + 2;
+	int stringLength = msg.length() + 2;
 
 	for (int c = 0; c < stringLength; c++)
 	{
@@ -54,7 +54,7 @@ void App::sendMsg(string kek)
 
 	if (socket)
 	{
-		send(socket, kek.c_str(), kek.length() + 1, 0);
+		send(socket, msg.c_str(), msg.length() + 1, 0);
 
 		if (input)
 		{
